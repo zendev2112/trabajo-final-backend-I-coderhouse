@@ -18,10 +18,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rutas básicas
-app.get('/', (req, res) => {
-  res.render('index', { title: 'Home' });
-});
+// Rutas de vistas
+const viewsRouter = require('./routes/views.routes');
+app.use('/', viewsRouter);
+
+// Rutas API
+const productsRouter = require('./routes/api/products.routes');
+const cartsRouter = require('./routes/api/carts.routes');
+
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
 
 // Iniciar servidor
 app.listen(PORT, () => {
