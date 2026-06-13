@@ -16,8 +16,27 @@ class ProductDAO {
   }
 
   // Obtener todos los productos (MongoDB)
-  async getAll(query = {}) {
-    return await Product.find(query);
+  async getAll(filters = {}, limit = 10, page = 1, sort = {}) {
+    const skip = (page - 1) * limit;
+
+    const query = {};
+    if (filters.category) query.category = filters.category;
+    if (filters.minPrice) query.price = { ...query.price, $gte: filters.minPrice };
+    if (filters.maxPrice) query.price = { ...query.price, $lte: filters.maxPrice };
+
+    const products = await Product.find(query)
+      .limit(limit)
+      .skip(skip)
+      .sort(sort);
+
+    const total = await Product.countDocuments(query);
+
+    return {
+      products,
+      totalProducts: total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
   }
 
   // Obtener producto por ID

@@ -4,8 +4,18 @@ class ProductController {
   // GET todos los productos
   static async getAll(req, res) {
     try {
-      const products = await ProductDAO.getAll();
-      res.json(products);
+      const { category, minPrice, maxPrice, sort = 'price', limit = 10, page = 1 } = req.query;
+
+      const filters = {};
+      if (category) filters.category = category;
+      if (minPrice) filters.minPrice = parseInt(minPrice);
+      if (maxPrice) filters.maxPrice = parseInt(maxPrice);
+
+      const sortObj = {};
+      if (sort) sortObj[sort] = 1;
+
+      const result = await ProductDAO.getAll(filters, parseInt(limit), parseInt(page), sortObj);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
