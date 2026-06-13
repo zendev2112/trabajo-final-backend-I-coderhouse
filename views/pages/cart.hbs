@@ -1,0 +1,39 @@
+<h2>Mi Carrito</h2>
+
+{{#if products.length}}
+  <table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+        <tr>
+          <td>{{this.title}}</td>
+          <td>${{this.price}}</td>
+          <td>{{this.quantity}}</td>
+          <td>
+            <form method="POST" action="/cart/remove/{{this._id}}" style="display:inline;">
+              <button type="submit">Quitar</button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <div style="margin-top: 1rem;">
+    <p><strong>Total: ${{total}}</strong></p>
+    <form method="POST" action="/cart/clear">
+      <button type="submit">Vaciar carrito</button>
+    </form>
+  </div>
+{{else}}
+  <p>El carrito está vacío</p>
+{{/if}}
+
+<a href="/products">Volver a productos</a>

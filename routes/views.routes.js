@@ -1,5 +1,6 @@
 const express = require('express');
 const Product = require('../models/Product');
+const ViewCartController = require('../controllers/ViewCartController');
 
 const router = express.Router();
 
@@ -28,5 +29,11 @@ router.get('/products/:pid', async (req, res) => {
     res.status(500).render('error', { error: error.message });
   }
 });
+
+// Rutas del carrito
+router.get('/cart', ViewCartController.getCart);
+router.post('/cart/add', ViewCartController.addProduct);
+router.post('/cart/remove/:pid', ViewCartController.removeProduct);
+router.post('/cart/clear', ViewCartController.clearCart);
 
 module.exports = router;
