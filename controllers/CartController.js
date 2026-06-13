@@ -1,11 +1,12 @@
-const Cart = require('../models/Cart');
+const CartDAO = require('../dao/CartDAO');
 const Product = require('../models/Product');
+const Cart = require('../models/Cart');
 
 class CartController {
   // GET carrito por ID
   static async getById(req, res) {
     try {
-      const cart = await Cart.findById(req.params.cid).populate('products.productId');
+      const cart = await CartDAO.getById(req.params.cid);
       if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' });
       res.json(cart);
     } catch (error) {
@@ -16,8 +17,7 @@ class CartController {
   // POST crear carrito
   static async create(req, res) {
     try {
-      const cart = new Cart({ products: [] });
-      await cart.save();
+      const cart = await CartDAO.create();
       res.status(201).json(cart);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -45,6 +45,7 @@ class CartController {
       }
 
       await cart.save();
+      await CartDAO.saveToFile(cart);
       res.json(cart);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -61,6 +62,7 @@ class CartController {
 
       cart.products = cart.products.filter((p) => p.productId.toString() !== pid);
       await cart.save();
+      await CartDAO.saveToFile(cart);
       res.json(cart);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -77,6 +79,7 @@ class CartController {
 
       cart.products = [];
       await cart.save();
+      await CartDAO.saveToFile(cart);
       res.json(cart);
     } catch (error) {
       res.status(500).json({ error: error.message });
