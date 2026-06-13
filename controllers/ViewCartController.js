@@ -36,6 +36,7 @@ class ViewCartController {
   static async addProduct(req, res) {
     try {
       const { productId, quantity } = req.body;
+      const qty = parseInt(quantity) || 1;
 
       let cart = await Cart.findOne();
       if (!cart) {
@@ -47,9 +48,9 @@ class ViewCartController {
 
       const existingProduct = cart.products.find((p) => p.productId.toString() === productId);
       if (existingProduct) {
-        existingProduct.quantity += quantity || 1;
+        existingProduct.quantity += qty;
       } else {
-        cart.products.push({ productId, quantity: quantity || 1 });
+        cart.products.push({ productId, quantity: qty });
       }
 
       await cart.save();

@@ -29,6 +29,7 @@ class CartController {
     try {
       const { cid, pid } = req.params;
       const { quantity } = req.body;
+      const qty = parseInt(quantity) || 1;
 
       const cart = await Cart.findById(cid);
       if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' });
@@ -38,9 +39,9 @@ class CartController {
 
       const existingProduct = cart.products.find((p) => p.productId.toString() === pid);
       if (existingProduct) {
-        existingProduct.quantity += quantity || 1;
+        existingProduct.quantity += qty;
       } else {
-        cart.products.push({ productId: pid, quantity: quantity || 1 });
+        cart.products.push({ productId: pid, quantity: qty });
       }
 
       await cart.save();

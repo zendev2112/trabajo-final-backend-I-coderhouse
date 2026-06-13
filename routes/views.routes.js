@@ -36,4 +36,9 @@ router.post('/cart/add', ViewCartController.addProduct);
 router.post('/cart/remove/:pid', ViewCartController.removeProduct);
 router.post('/cart/clear', ViewCartController.clearCart);
 
+// Ruta para subir imagen
+router.get('/upload/:pid', async (req, res) => {
+  res.render('pages/upload-image', { productId: req.params.pid });
+});
+
 module.exports = router;
