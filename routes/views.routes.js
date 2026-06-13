@@ -12,8 +12,41 @@ router.get('/', (req, res) => {
 // GET listado de productos
 router.get('/products', async (req, res) => {
   try {
-    const products = await Product.find();
-    res.render('pages/products', { products });
+    const { category, minPrice, maxPrice, sort = 'price', limit = 10, page = 1 } = req.query;
+
+    // Construir query string para la API
+    const queryParams = new URLSearchParams();
+    if (category) queryParams.append('category', category);
+    if (minPrice) queryParams.append('minPrice', minPrice);
+    if (maxPrice) queryParams.append('maxPrice', maxPrice);
+    queryParams.append('sort', sort);
+    queryParams.append('limit', limit);
+    queryParams.append('page', page);
+
+    // Llamar a la API
+    const apiUrl = `http://localhost:8080/api/products?${queryParams}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    // Preparar datos para la vista
+    const filters = { category: category || '', minPrice: minPrice || '', maxPrice: maxPrice || '' };
+    const currentPage = parseInt(page);
+    const hasPrev = currentPage > 1;
+    const hasNext = currentPage < data.totalPages;
+    const prevPage = currentPage - 1;
+    const nextPage = currentPage + 1;
+
+    res.render('pages/products', {
+      products: data.products,
+      currentPage: data.currentPage,
+      totalPages: data.totalPages,
+      filters,
+      sort,
+      hasPrev,
+      hasNext,
+      prevPage,
+      nextPage,
+    });
   } catch (error) {
     res.status(500).render('error', { error: error.message });
   }

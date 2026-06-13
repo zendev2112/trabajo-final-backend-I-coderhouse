@@ -25,6 +25,12 @@ setupSocket(io);
 // Configurar vistas (Handlebars)
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Registrar helper para comparar valores
+const hbs = require('hbs');
+hbs.registerHelper('ifEquals', (a, b, options) => {
+  return a === b ? options.fn(this) : options.inverse(this);
+});
 app.set('view options', { layout: 'layouts/main' });
 
 // Middleware

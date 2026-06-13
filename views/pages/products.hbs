@@ -1,6 +1,41 @@
 <h2>Productos</h2>
 
-{{#if products}}
+<div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;">
+  <h3>Filtros</h3>
+  <form method="GET" action="/products">
+    <div style="margin-bottom: 1rem;">
+      <label for="category">Categoría:</label>
+      <select id="category" name="category">
+        <option value="">Todas</option>
+        <option value="Electrónica" {{#if filters.category}}{{#ifEquals filters.category "Electrónica"}}selected{{/ifEquals}}{{/if}}>Electrónica</option>
+        <option value="Accesorios" {{#if filters.category}}{{#ifEquals filters.category "Accesorios"}}selected{{/ifEquals}}{{/if}}>Accesorios</option>
+        <option value="Audio" {{#if filters.category}}{{#ifEquals filters.category "Audio"}}selected{{/ifEquals}}{{/if}}>Audio</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <label for="minPrice">Precio mínimo:</label>
+      <input type="number" id="minPrice" name="minPrice" value="{{filters.minPrice}}" min="0">
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <label for="maxPrice">Precio máximo:</label>
+      <input type="number" id="maxPrice" name="maxPrice" value="{{filters.maxPrice}}" min="0">
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <label for="sort">Ordenar por:</label>
+      <select id="sort" name="sort">
+        <option value="price" {{#ifEquals sort "price"}}selected{{/ifEquals}}>Precio</option>
+        <option value="title" {{#ifEquals sort "title"}}selected{{/ifEquals}}>Nombre</option>
+      </select>
+    </div>
+
+    <button type="submit">Filtrar</button>
+  </form>
+</div>
+
+{{#if products.length}}
   <div class="products-container">
     {{#each products}}
       <div class="product-card">
@@ -12,6 +47,18 @@
         <a href="/products/{{this._id}}">Ver detalle</a>
       </div>
     {{/each}}
+  </div>
+
+  <div style="margin-top: 2rem; text-align: center;">
+    <p>Página {{currentPage}} de {{totalPages}}</p>
+    <div>
+      {{#if hasPrev}}
+        <a href="/products?page={{prevPage}}&category={{filters.category}}&minPrice={{filters.minPrice}}&maxPrice={{filters.maxPrice}}&sort={{sort}}">← Anterior</a>
+      {{/if}}
+      {{#if hasNext}}
+        <a href="/products?page={{nextPage}}&category={{filters.category}}&minPrice={{filters.minPrice}}&maxPrice={{filters.maxPrice}}&sort={{sort}}">Siguiente →</a>
+      {{/if}}
+    </div>
   </div>
 {{else}}
   <p>No hay productos disponibles</p>
