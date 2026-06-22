@@ -185,13 +185,3 @@ curl -X POST http://localhost:8080/api/products/upload/[ID] \
 - **Variables de Entorno**: dotenv
 - **Desarrollo**: nodemon
 
-## Notas
-
-- Todos los comentarios están en español
-- La BD es accesible desde múltiples IPs (0.0.0.0/0 en desarrollo)
-- Los datos se respaldan automáticamente en archivos JSON
-- WebSockets se conectan automáticamente al cargar cualquier página
-
-## Autor
-
-Trabajo Final Backend I - Coderhouse
